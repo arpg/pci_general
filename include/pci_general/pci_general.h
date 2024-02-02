@@ -11,6 +11,7 @@
 #include <ros/ros.h>
 #include <tf/tf.h>
 #include <trajectory_msgs/MultiDOFJointTrajectory.h>
+#include <nav_msgs/Path.h>
 
 #include "planner_control_interface/pci_manager.h"
 #include "planner_msgs/pathFollowerActionAction.h"

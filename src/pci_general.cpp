@@ -7,7 +7,7 @@ PCIGeneral::PCIGeneral(const ros::NodeHandle& nh,
     : PCIManager(nh, nh_private), ac_("pci_output_path", true) {
   trajectory_pub_ = nh_.advertise<trajectory_msgs::MultiDOFJointTrajectory>(
       mav_msgs::default_topics::COMMAND_TRAJECTORY, 10);
-  path_pub_ = nh_.advertise<geometry_msgs::PoseArray>("pci_command_path", 10);
+  path_pub_ = nh_.advertise<nav_msgs::Path>("pci_command_path", 10);
 }
 
 bool PCIGeneral::initialize() {
@@ -359,7 +359,8 @@ bool PCIGeneral::executePath(const std::vector<geometry_msgs::Pose>& path,
       samples_array_.header.frame_id = world_frame_id_;
       samples_array_.points.clear();
       double time_sum = 0;
-      geometry_msgs::PoseArray command_path;
+      //geometry_msgs::PoseArray command_path;
+      nav_msgs::Path command_path;
       command_path.header.frame_id = world_frame_id_;
       for (int i = 0; i < path_new.size(); i++) {
         double yaw = tf::getYaw(path_new[i].orientation);
@@ -374,7 +375,11 @@ bool PCIGeneral::executePath(const std::vector<geometry_msgs::Pose>& path,
         time_sum += dt_;
         trajectory_point_msg_.time_from_start = ros::Duration(time_sum);
         samples_array_.points.push_back(trajectory_point_msg_);
-        command_path.poses.push_back(path_new[i]);
+        geometry_msgs::PoseStamped pose_stamped;
+        pose_stamped.header.stamp = ros::Time::now();
+        pose_stamped.header.frame_id = world_frame_id_;
+        pose_stamped.pose = path_new[i];
+        command_path.poses.push_back(pose_stamped);
       }
       trajectory_vis_pub_.publish(
           generateTrajectoryMarkerArray(samples_array_));
