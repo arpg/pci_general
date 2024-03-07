@@ -577,6 +577,19 @@ void PCIGeneral::allocateYawAlongPath(
 
 void PCIGeneral::interpolatePath(const std::vector<geometry_msgs::Pose>& path,
                                  std::vector<geometry_msgs::Pose>& path_res) {
+
+    if (!path.empty()) {
+        ROS_INFO("Original path start pose: Position - x: %f, y: %f, z: %f; Orientation - x: %f, y: %f, z: %f, w: %f",
+                 path.front().position.x, path.front().position.y, path.front().position.z,
+                 path.front().orientation.x, path.front().orientation.y,
+                 path.front().orientation.z, path.front().orientation.w);
+                 
+        ROS_INFO("Original path end pose: Position - x: %f, y: %f, z: %f; Orientation - x: %f, y: %f, z: %f, w: %f",
+                 path.back().position.x, path.back().position.y, path.back().position.z,
+                 path.back().orientation.x, path.back().orientation.y,
+                 path.back().orientation.z, path.back().orientation.w);
+    }
+  
   path_res.clear();
   if (path.size() == 0) return;
   if (path.size() == 1) path_res.push_back(path[0]);
@@ -622,6 +635,22 @@ void PCIGeneral::interpolatePath(const std::vector<geometry_msgs::Pose>& path,
       }
     }
   }
+  if (!path.empty()) {
+    path_res.push_back(path.back());
+  }
+
+      if (!path_res.empty()) {
+        ROS_INFO("Final interpolated path start pose: Position - x: %f, y: %f, z: %f; Orientation - x: %f, y: %f, z: %f, w: %f",
+                 path_res.front().position.x, path_res.front().position.y, path_res.front().position.z,
+                 path_res.front().orientation.x, path_res.front().orientation.y,
+                 path_res.front().orientation.z, path_res.front().orientation.w);
+                 
+        ROS_INFO("Final interpolated path end pose: Position - x: %f, y: %f, z: %f; Orientation - x: %f, y: %f, z: %f, w: %f",
+                 path_res.back().position.x, path_res.back().position.y, path_res.back().position.z,
+                 path_res.back().orientation.x, path_res.back().orientation.y,
+                 path_res.back().orientation.z, path_res.back().orientation.w);
+    }
+
 }
 
 void PCIGeneral::executionTimerCallback(const ros::TimerEvent& event) {
